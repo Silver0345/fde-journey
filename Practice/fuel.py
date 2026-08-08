@@ -17,8 +17,9 @@ def get_fraction():
             x, y = frac.split("/")
             x = int(x)
             y = int(y)
-        except ValueError:
-            pass
+        except ValueError as e:
+            print("Invalid input. ")
+            continue
             
         if x > y or y == 0:
             continue
