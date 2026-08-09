@@ -5,36 +5,43 @@
 
 def main():
     
-    x, y = get_fraction()
-    check_fuel(x, y)
+    x, y = get_valid_range()   
+    print(guage(x, y))
 
-def get_fraction():
+def convert(frac):
+      
+    x, y = frac.split("/")
+    x = int(x)
+    y = int(y)
     
+    if y == 0:
+        raise ZeroDivisionError("Zero denominator.")
+                        
+    elif x > y:
+        raise ValueError("x should be less than y.")
+    else:
+        return x, y
+            
+    
+def get_valid_range():
     while True:
-        frac = input("Enter a fraction (a/b): ")
-        try:
-            
-            x, y = frac.split("/")
-            x = int(x)
-            y = int(y)
-        except ValueError as e:
-            print("Invalid input. ")
-            continue
-            
-        if x > y or y == 0:
-            continue
-        else:
+        try:   
+            frac = input("Enter a fraction (a/b): ").strip()
+            x, y = convert(frac)
             return x, y
-        
-def check_fuel(num, denom):
+        except (ValueError, ZeroDivisionError):
+            continue
+           
+def guage(num, denom):
     result = (num / denom) * 100
     result = int(result)
 
     if result <= 1:
-        print("E")
+        return "E"
     elif result >= 99:
-        print("F")
+        return "F"
     else:
-        print(f"{result}%")
-    
-main()
+        return f"{result}%"
+
+if "__main__" == __name__:    
+    main()
