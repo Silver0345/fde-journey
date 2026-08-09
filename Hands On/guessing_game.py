@@ -12,35 +12,45 @@ def main():
         
         play_game = input("Do you want to play the guessing game? (yes/no): ").strip()
         if play_game.lower() == "yes":
+            
             game +=1
-            l_range, r_range = choose_difficulty()
-            guess_number(l_range, r_range)
+            l_range, r_range = get_valid_range()
+            ans = guess_number(l_range, r_range)
+            print(ans)
         elif play_game.lower() == "no":
             print(f"You played {game} game(s).")
             break
         else:
             print("Invalid input. Please enter 'yes' or 'no'.")
             pass
+        
+    
+    
 
-def choose_difficulty():
+def choose_difficulty(range_size):
     '''
     Prompt the user for a range formatted as "low-high" (e.g. "1-50").
     Reprompts on any input that can't be split and parsed into two
     integers. Returns the two bounds as (l_range, r_range); does not
     itself guarantee l_range < r_range — guess_number() handles that.
-    '''
+    '''   
+    
+    difficulty = range_size.split("-")
+    r_range = int(difficulty[-1])
+    l_range = int(difficulty[0])
+           
+    return (l_range, r_range)
+        
+
+def get_valid_range():
+    
     while True:
         try:
-            range_size = input("Choose a range size: 1-50 vs 1-200: ")
-            difficulty = range_size.split("-")
-            r_range = int(difficulty[-1])
-            l_range = int(difficulty[0])
-           
+            val = input("Enter a range e.g. 50-100, 1-200: ").strip()
+            l_range, r_range = choose_difficulty(val)
             return l_range, r_range
-        
         except ValueError:
-            print("Invalid input. Please enter a valid integer range.")
-            pass
+            continue
         
 def guess_number(l_numb, r_numb):
     '''
@@ -60,26 +70,39 @@ def guess_number(l_numb, r_numb):
         return
 
     while True:
-        if guess_numb > 7:
-            print(f"You lost, that was attempt number {guess_numb - 1}.")
-            break
+        
         try:
             guess = input(f"Guess a number between {l_numb} and {r_numb}: ") 
             guess = int(guess)
+            ans = check_guess(guess, number)
+            guess_numb += 1  # Increment the number of attempts            
             
-            if guess > number:
-                print("Too high! Try again.")
-                guess_numb += 1
-            elif guess < number:
-                print("Too low! Try again.")
-                guess_numb += 1
-            else:
-                print(f"Congratulations! You guessed the number {guess} in {guess_numb} attempts.")
-                guess_numb += 1
-                break
+            if ans == "Correct":
+                return f"{ans} that was attempt number {guess_numb -1}."
+                
+            elif guess_numb > 7  :
+                return f"You lost, that was attempt number {guess_numb - 1}."
+            else: 
+                continue
         except ValueError:
             print("Please enter a valid integer.")
             continue
-            
+        
     
-main()
+def check_guess(guess, number):
+    '''
+    Compare the player's guess to the target number and return feedback.
+    Returns "too high" if the guess is greater than the target, "too low"
+    if less, and "correct" if equal. This function is not strictly necessary
+    but can be useful for testing or future extensions.
+    '''
+    if guess > number:
+        return "Too High"
+    elif guess < number:
+        return "Too Low"
+    else:
+        return f"Correct"   
+    
+             
+if "__main__" == __name__:
+    main()
